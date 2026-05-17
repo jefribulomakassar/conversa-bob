@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     start(controller) {
       // Kirim endpoint info via SSE
       const data = JSON.stringify({
-        name: "conversa-mcp",
+        name: "conversa-bob",
         version: "0.1.0",
         status: "ok",
         tools: [
