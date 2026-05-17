@@ -50,7 +50,8 @@ const MCP_CONFIG = `{
         "conversa_build_form",
         "conversa_scrape_url",
         "conversa_deploy_code"
-      ]
+      ],
+      "disabled": false
     }
   }
 }`;
