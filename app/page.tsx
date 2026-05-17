@@ -57,8 +57,9 @@ const MCP_CONFIG = `{
 }`;
 
 type ThemeMode = "dark" | "light" | "system";
+type VisualStyle = "hacker" | "nature";
+type Lang = "en" | "id";
 
-// ── Theme palettes ────────────────────────────────────────
 const THEMES = {
   dark: {
     green:  "#00FF41",
@@ -71,7 +72,7 @@ const THEMES = {
     bgCode: "#060C12",
     scanline: "rgba(0,255,65,0.03)",
     vignette: "rgba(0,0,0,0.7)",
-    bootBg:  "#000",
+    navBg:  "rgba(8,14,20,0.92)",
   },
   light: {
     green:  "#007A29",
@@ -84,7 +85,7 @@ const THEMES = {
     bgCode: "#E9EDF2",
     scanline: "rgba(0,100,40,0.03)",
     vignette: "rgba(200,210,220,0.3)",
-    bootBg:  "#000",
+    navBg:  "rgba(243,244,246,0.92)",
   },
 };
 
@@ -98,8 +99,7 @@ function resolveTheme(mode: ThemeMode) {
   return THEMES[mode];
 }
 
-// ── Icons ─────────────────────────────────────────────────
-const Icons: Record<ThemeMode, string> = { dark: "◐", light: "○", system: "◑" };
+const ThemeIcons: Record<ThemeMode, string> = { dark: "◐", light: "○", system: "◑" };
 
 // ── Boot sequence ─────────────────────────────────────────
 function BootSequence({ onDone }: { onDone: () => void }) {
@@ -124,9 +124,8 @@ function BootSequence({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, opacity: fading ? 0 : 1, transition: "opacity 0.5s", pointerEvents: fading ? "none" : "all" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, opacity: fading ? 0 : 1, transition: "opacity 0.5s", pointerEvents: fading ? "none" : "all" }}>
       <div style={{ fontFamily: "monospace", maxWidth: 720, padding: 32 }}>
-        {/* ASCII logo sedikit lebih besar */}
         <pre style={{ color: "#00FF41", fontSize: 9, lineHeight: 1.15, marginBottom: 24, whiteSpace: "pre", overflow: "hidden" }}>{ASCII_LOGO}</pre>
         {lines.map((line, i) => (
           <div key={i} style={{ color: lineColor(line), marginBottom: 3, fontSize: 15, minHeight: 20 }}>{line || "\u00A0"}</div>
@@ -170,18 +169,14 @@ function TerminalCard({ tool, index, C }: { tool: typeof TOOLS[0]; index: number
       <div style={{ position: "absolute", top: 0, left: 0, width: 8, height: 8, borderTop: `2px solid ${tool.color}`, borderLeft: `2px solid ${tool.color}`, opacity: hovered ? 1 : 0.3 }} />
       <div style={{ position: "absolute", bottom: 0, right: 0, width: 8, height: 8, borderBottom: `2px solid ${tool.color}`, borderRight: `2px solid ${tool.color}`, opacity: hovered ? 1 : 0.3 }} />
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        {/* Index number: naik dari 10 → 13px */}
         <span style={{ fontSize: 13, color: C.dim, letterSpacing: "0.2em" }}>{String(index + 1).padStart(2, "0")}</span>
-        {/* Tool name: naik dari 13 → 16px */}
         <span style={{ fontSize: 16, fontWeight: 700, color: tool.color, textShadow: hovered ? `0 0 16px ${tool.color}` : "none", letterSpacing: "0.1em", fontFamily: "monospace" }}>.{tool.cmd}</span>
       </div>
-      {/* Command preview: naik dari 10 → 13px */}
       <div style={{ fontSize: 13, color: C.muted, marginBottom: 12, minHeight: 20, fontFamily: "monospace" }}>
         {hovered
           ? <span><span style={{ color: tool.color }}>$ </span>{typed}<span style={{ display: "inline-block", width: 6, height: 13, background: C.muted, verticalAlign: "middle", animation: "blink 1s step-end infinite" }} /></span>
           : <span style={{ color: C.dim }}>hover to preview command</span>}
       </div>
-      {/* Description: naik dari 11 → 14px */}
       <div style={{ fontSize: 14, color: hovered ? C.muted : C.dim, fontFamily: "monospace", transition: "color 0.2s" }}>
         <span style={{ color: C.dim }}>// </span>{tool.desc}
       </div>
@@ -193,12 +188,43 @@ function TerminalCard({ tool, index, C }: { tool: typeof TOOLS[0]; index: number
 function ThemeToggle({ mode, onChange, C }: { mode: ThemeMode; onChange: (m: ThemeMode) => void; C: typeof THEMES.dark }) {
   const modes: ThemeMode[] = ["dark", "light", "system"];
   return (
-    <div style={{ display: "flex", border: `1px solid ${C.border}`, overflow: "hidden" }}>
+    <div style={{ display: "flex", border: `1px solid ${C.border}`, overflow: "hidden", borderRadius: 4 }}>
       {modes.map(m => (
         <button key={m} onClick={() => onChange(m)}
-          style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.12em", padding: "6px 12px", background: mode === m ? `${C.green}18` : "transparent", border: "none", borderRight: m !== "system" ? `1px solid ${C.border}` : "none", color: mode === m ? C.green : C.dim, cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 4 }}>
-          <span>{Icons[m]}</span>
-          <span style={{ textTransform: "uppercase" }}>{m}</span>
+          style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 11, letterSpacing: "0.1em", padding: "6px 10px", background: mode === m ? `${C.green}18` : "transparent", border: "none", borderRight: m !== "system" ? `1px solid ${C.border}` : "none", color: mode === m ? C.green : C.dim, cursor: "pointer", transition: "all 0.2s", display: "flex", alignItems: "center", gap: 3 }}>
+          <span>{ThemeIcons[m]}</span>
+          <span style={{ textTransform: "uppercase", fontSize: 10 }}>{m}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ── Visual style toggle ───────────────────────────────────
+function VisualToggle({ vStyle, onChange, C }: { vStyle: VisualStyle; onChange: (s: VisualStyle) => void; C: typeof THEMES.dark }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <span style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 10, color: C.dim, letterSpacing: "0.15em" }}>STYLE:</span>
+      <div style={{ display: "flex", border: `1px solid ${C.border}`, overflow: "hidden", borderRadius: 4 }}>
+        {(["hacker", "nature"] as VisualStyle[]).map(s => (
+          <button key={s} onClick={() => onChange(s)}
+            style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 11, letterSpacing: "0.08em", padding: "6px 12px", background: vStyle === s ? `${C.green}18` : "transparent", border: "none", borderRight: s === "hacker" ? `1px solid ${C.border}` : "none", color: vStyle === s ? C.green : C.dim, cursor: "pointer", transition: "all 0.2s", fontWeight: vStyle === s ? 700 : 400 }}>
+            {s === "hacker" ? "⌨ HACKER" : "🌿 NATURE"}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Lang toggle ───────────────────────────────────────────
+function LangToggle({ lang, onChange, C }: { lang: Lang; onChange: (l: Lang) => void; C: typeof THEMES.dark }) {
+  return (
+    <div style={{ display: "flex", border: `1px solid ${C.border}`, overflow: "hidden", borderRadius: 4 }}>
+      {(["en", "id"] as Lang[]).map(l => (
+        <button key={l} onClick={() => onChange(l)}
+          style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.2em", padding: "6px 14px", background: lang === l ? `${C.green}18` : "transparent", border: "none", borderRight: l === "en" ? `1px solid ${C.border}` : "none", color: lang === l ? C.green : C.dim, cursor: "pointer", transition: "all 0.2s", fontWeight: lang === l ? 700 : 400 }}>
+          {l.toUpperCase()}
         </button>
       ))}
     </div>
@@ -209,12 +235,15 @@ function ThemeToggle({ mode, onChange, C }: { mode: ThemeMode; onChange: (m: The
 export default function Home() {
   const [booted, setBooted]       = useState(false);
   const [themeMode, setThemeMode] = useState<ThemeMode>("dark");
+  const [vStyle, setVStyle]       = useState<VisualStyle>("hacker");
+  const [lang, setLang]           = useState<Lang>("en");
   const [C, setC]                 = useState(THEMES.dark);
   const [copied, setCopied]       = useState(false);
   const [activeTab, setActiveTab] = useState<"config" | "test">("config");
   const [testInput, setTestInput] = useState("");
   const [testOutput, setTestOutput] = useState("");
   const [testing, setTesting]     = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
 
   const handleDone = useCallback(() => setBooted(true), []);
 
@@ -229,15 +258,24 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("theme") as ThemeMode | null;
-      if (saved) setThemeMode(saved);
+      const savedTheme = localStorage.getItem("theme") as ThemeMode | null;
+      const savedLang  = localStorage.getItem("lang")  as Lang       | null;
+      const savedStyle = localStorage.getItem("vStyle") as VisualStyle | null;
+      if (savedTheme) setThemeMode(savedTheme);
+      if (savedLang)  setLang(savedLang);
+      if (savedStyle) setVStyle(savedStyle);
     }
   }, []);
 
-  const handleTheme = (m: ThemeMode) => {
-    setThemeMode(m);
-    localStorage.setItem("theme", m);
-  };
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleTheme  = (m: ThemeMode)   => { setThemeMode(m); localStorage.setItem("theme", m); };
+  const handleLang   = (l: Lang)        => { setLang(l);      localStorage.setItem("lang", l); };
+  const handleVStyle = (s: VisualStyle) => { setVStyle(s);    localStorage.setItem("vStyle", s); };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(MCP_CONFIG);
@@ -245,7 +283,6 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const TOKEN = "24ad7b9b44cc4b1fa355d0b28e957f85dfbb4e1e820656f3d0ad781c5e6e4958";
   const handleTest = async () => {
     setTesting(true); setTestOutput("");
     try {
@@ -266,7 +303,11 @@ export default function Home() {
     }
   };
 
-  const isLight = C === THEMES.light;
+  const isLight = themeMode === "light" || (themeMode === "system" && !getSystemDark());
+
+  const heroLine1 = lang === "id" ? "AGEN AI KAMU"    : "YOUR AI AGENTS";
+  const heroLine2 = lang === "id" ? "DI DALAM BOB IDE" : "INSIDE BOB IDE";
+  const systemInit = lang === "id" ? "> SISTEM_AKTIF :: SERVER_MCP_ONLINE" : "> SYSTEM_INIT :: MCP_SERVER_ONLINE";
 
   return (
     <>
@@ -286,47 +327,54 @@ export default function Home() {
       {!isLight && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, height: 80, background: `linear-gradient(transparent, ${C.scanline}, transparent)`, animation: "scanline 12s linear infinite", pointerEvents: "none", zIndex: 50 }} />
       )}
-
       <div style={{ position: "fixed", inset: 0, background: `radial-gradient(ellipse at center, transparent 50%, ${C.vignette} 100%)`, pointerEvents: "none", zIndex: 40 }} />
 
-      <main style={{ minHeight: "100vh", background: C.bg, color: C.white, fontFamily: "'Share Tech Mono', monospace", opacity: booted ? 1 : 0, transition: "opacity 0.6s, background 0.3s, color 0.3s", animation: booted && !isLight ? "flicker 14s infinite" : "none" }}>
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
+      {/* ── STICKY NAVBAR ── */}
+      <header style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        background: C.navBg,
+        borderBottom: `1px solid ${scrolled ? C.green + "30" : C.border}`,
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        boxShadow: scrolled ? `0 2px 24px ${C.green}15` : "none",
+        transition: "box-shadow 0.3s, border-color 0.3s",
+      }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "center", height: 60, gap: 12, flexWrap: "wrap" }}>
+          {/* Brand */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+            <div style={{ width: 8, height: 8, background: C.green, boxShadow: `0 0 10px ${C.green}`, animation: "blink 2s step-end infinite" }} />
+            <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_MCP</span>
+            <span style={{ color: C.border }}>|</span>
+            <span style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 12, color: C.dim }}>v0.1.0</span>
+          </div>
+          {/* Controls */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <VisualToggle vStyle={vStyle} onChange={handleVStyle} C={C} />
+            <span style={{ color: C.border, fontSize: 16 }}>|</span>
+            <LangToggle lang={lang} onChange={handleLang} C={C} />
+            <ThemeToggle mode={themeMode} onChange={handleTheme} C={C} />
+            <div style={{ display: "flex", gap: 14, fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.12em", marginLeft: 4 }}>
+              <span style={{ color: C.dim }}>IBM BOB 2026</span>
+              <a href="https://github.com/jefribulomakassar/conversa-bob-mcp" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
+            </div>
+          </div>
+        </div>
+      </header>
 
-          {/* ── Header ── */}
-          <header style={{ borderBottom: `1px solid ${C.border}`, padding: "20px 0", display: "flex", justifyContent: "space-between", alignItems: "center", animation: "fadeUp 0.5s ease 0.2s both" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 8, height: 8, background: C.green, boxShadow: `0 0 10px ${C.green}`, animation: "blink 2s step-end infinite" }} />
-              {/* Brand: naik dari 10 → 13px */}
-              <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_MCP</span>
-              <span style={{ color: C.border }}>|</span>
-              {/* Version: naik dari 10 → 13px */}
-              <span style={{ fontSize: 13, color: C.dim }}>v0.1.0</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <ThemeToggle mode={themeMode} onChange={handleTheme} C={C} />
-              <div style={{ display: "flex", gap: 16, fontSize: 13, letterSpacing: "0.15em" }}>
-                <span style={{ color: C.dim }}>IBM BOB 2026</span>
-                <a href="https://conversa-bob.vercel.app" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
-              </div>
-            </div>
-          </header>
+      <main style={{ minHeight: "100vh", background: C.bg, color: C.white, fontFamily: "'Share Tech Mono', monospace", opacity: booted ? 1 : 0, transition: "opacity 0.6s, background 0.3s, color 0.3s", animation: booted && !isLight ? "flicker 14s infinite" : "none", paddingTop: 60 }}>
+        <div style={{ position: "relative", zIndex: 2, maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
 
           {/* ── Hero ── */}
           <section style={{ padding: "80px 0 56px", animation: "fadeUp 0.6s ease 0.4s both" }}>
-            {/* System init label: naik dari 10 → 13px */}
-            <div style={{ fontSize: 13, color: C.dim, letterSpacing: "0.3em", marginBottom: 20 }}>
-              &gt; SYSTEM_INIT :: MCP_SERVER_ONLINE
-            </div>
-            {/* H1: naik clamp min 32px → 38px, max 60px → 68px */}
+            <div style={{ fontSize: 13, color: C.dim, letterSpacing: "0.3em", marginBottom: 20 }}>{systemInit}</div>
             <h1 style={{ fontFamily: "'Orbitron',monospace", fontSize: "clamp(32px,5vw,68px)", fontWeight: 900, lineHeight: 1.1, letterSpacing: "-0.02em", marginBottom: 28 }}>
-              <GlitchText text="YOUR AI AGENTS" color={C.green} />
+              <GlitchText text={heroLine1} color={C.green} />
               <br />
               <span style={{ color: C.border, fontSize: "0.5em" }}>━━━━━━━━━━━━━━━━━━━━━━━━</span>
               <br />
-              <GlitchText text="INSIDE BOB IDE" color={C.white} />
+              <GlitchText text={heroLine2} color={C.white} />
             </h1>
 
-            {/* Stats grid: naik dari 10 → 13px */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 2, maxWidth: 600, marginBottom: 36 }}>
               {[["PROTOCOL","JSON-RPC 2.0"],["TRANSPORT","HTTP / SSE"],["TOOLS","05 ACTIVE"],["STATUS","OPERATIONAL"]].map(([k,v]) => (
                 <div key={k} style={{ padding: "12px 14px", background: C.bgCard, border: `1px solid ${C.border}`, fontSize: 13 }}>
@@ -336,13 +384,12 @@ export default function Home() {
               ))}
             </div>
 
-            {/* CTA buttons: naik dari 10 → 13px */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <a href="#connect" style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.2em", color: isLight ? "#fff" : "#000", background: C.green, padding: "14px 32px", textDecoration: "none", fontWeight: 700, boxShadow: `0 0 24px ${C.green}50` }}>
-                CONNECT_BOB →
+                {lang === "id" ? "HUBUNGKAN_BOB →" : "CONNECT_BOB →"}
               </a>
               <a href="#tools" style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.2em", color: C.muted, border: `1px solid ${C.border}`, padding: "14px 32px", textDecoration: "none" }}>
-                VIEW_TOOLS
+                {lang === "id" ? "LIHAT_TOOLS" : "VIEW_TOOLS"}
               </a>
             </div>
           </section>
@@ -350,14 +397,12 @@ export default function Home() {
           {/* ── Divider ── */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 48 }}>
             <div style={{ flex: 1, height: 1, background: `linear-gradient(to right, ${C.border}, transparent)` }} />
-            {/* Divider label: naik dari 9 → 12px */}
             <span style={{ fontSize: 12, color: C.dim, letterSpacing: "0.35em" }}>◈ TOOL_REGISTRY ◈</span>
             <div style={{ flex: 1, height: 1, background: `linear-gradient(to left, ${C.border}, transparent)` }} />
           </div>
 
           {/* ── Tools ── */}
           <section id="tools" style={{ marginBottom: 72, animation: "fadeUp 0.6s ease 0.6s both" }}>
-            {/* Section label: naik dari 10 → 13px */}
             <div style={{ fontSize: 13, color: C.dim, letterSpacing: "0.3em", marginBottom: 14 }}>&gt; ls ./tools/ — 5 items found</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(190px,1fr))", gap: 2 }}>
               {TOOLS.map((tool, i) => <TerminalCard key={tool.cmd} tool={tool} index={i} C={C} />)}
@@ -366,9 +411,7 @@ export default function Home() {
 
           {/* ── Architecture ── */}
           <section style={{ marginBottom: 72, animation: "fadeUp 0.6s ease 0.7s both" }}>
-            {/* Section label: naik dari 10 → 13px */}
             <div style={{ fontSize: 13, color: C.dim, letterSpacing: "0.3em", marginBottom: 14 }}>&gt; cat ARCHITECTURE.txt</div>
-            {/* Architecture diagram text: naik dari 12 → 15px */}
             <pre style={{ background: C.bgCode, border: `1px solid ${C.border}`, padding: "28px 32px", fontSize: 15, color: C.muted, lineHeight: 2.0, overflowX: "auto", transition: "background 0.3s" }}>{`
   ┌─────────────────────┐
   │   IBM BOB IDE       │  ← MCP Client
@@ -389,7 +432,6 @@ export default function Home() {
 
           {/* ── Connect ── */}
           <section id="connect" style={{ marginBottom: 72, animation: "fadeUp 0.6s ease 0.8s both" }}>
-            {/* Section label: naik dari 10 → 13px */}
             <div style={{ fontSize: 13, color: C.dim, letterSpacing: "0.3em", marginBottom: 14 }}>&gt; cat CONNECT.md</div>
             <div style={{ display: "flex", gap: 2, marginBottom: 2 }}>
               {(["config","test"] as const).map(tab => (
@@ -402,12 +444,10 @@ export default function Home() {
 
             {activeTab === "config" && (
               <div style={{ position: "relative" }}>
-                {/* Config code: naik dari 12 → 15px */}
                 <pre style={{ background: C.bgCode, border: `1px solid ${C.border}`, padding: "24px 28px", fontSize: 15, color: C.muted, lineHeight: 1.9, overflowX: "auto", transition: "background 0.3s" }}>
                   <span style={{ color: C.dim }}>{"// .bob/mcp.json — paste into Bob Shell\n"}</span>
                   {MCP_CONFIG}
                 </pre>
-                {/* Copy button: naik dari 9 → 12px */}
                 <button onClick={handleCopy}
                   style={{ position: "absolute", top: 12, right: 12, fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.15em", padding: "6px 16px", background: copied ? `${C.green}18` : "transparent", border: `1px solid ${copied ? C.green + "60" : C.border}`, color: copied ? C.green : C.muted, cursor: "pointer", transition: "all 0.2s" }}>
                   {copied ? "COPIED ✓" : "COPY"}
@@ -419,17 +459,14 @@ export default function Home() {
               <div style={{ background: C.bgCode, border: `1px solid ${C.border}`, padding: "20px 24px", transition: "background 0.3s" }}>
                 <div style={{ display: "flex", gap: 8, marginBottom: 14, alignItems: "center" }}>
                   <span style={{ color: C.green, fontSize: 18 }}>$</span>
-                  {/* Terminal input: naik dari 11 → 15px */}
                   <input value={testInput} onChange={e => setTestInput(e.target.value)} onKeyDown={e => e.key === "Enter" && handleTest()}
                     placeholder="GET /api/mcp"
                     style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontFamily: "'Share Tech Mono',monospace", fontSize: 15, color: C.muted, caretColor: C.green }} />
-                  {/* Run button: naik dari 10 → 13px */}
                   <button onClick={handleTest}
                     style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 13, letterSpacing: "0.15em", padding: "6px 16px", background: "transparent", border: `1px solid ${C.border}`, color: C.muted, cursor: "pointer" }}>
                     {testing ? "···" : "RUN"}
                   </button>
                 </div>
-                {/* Output: naik dari 11 → 14px */}
                 {testOutput
                   ? <pre style={{ fontSize: 14, color: C.green, lineHeight: 1.7, borderTop: `1px solid ${C.border}`, paddingTop: 14 }}>{testOutput}</pre>
                   : <div style={{ fontSize: 14, color: C.dim }}>// press RUN or Enter to ping health check</div>}
@@ -438,7 +475,6 @@ export default function Home() {
           </section>
 
           {/* ── Footer ── */}
-          {/* Footer: naik dari 10 → 13px */}
           <footer style={{ borderTop: `1px solid ${C.border}`, padding: "20px 0", display: "flex", justifyContent: "space-between", fontSize: 13, color: C.dim, letterSpacing: "0.15em" }}>
             <span>CONVERSA_SYSTEMS © 2026</span>
             <span style={{ color: C.green + "70" }}>IBM_BOB_HACKATHON :: MCP_v0.1.0</span>
