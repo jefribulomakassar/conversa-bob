@@ -343,7 +343,7 @@ export default function Home() {
           {/* Brand */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
             <div style={{ width: 8, height: 8, background: C.green, boxShadow: `0 0 10px ${C.green}`, animation: "blink 2s step-end infinite" }} />
-            <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_MCP</span>
+            <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_BOB</span>
             <span style={{ color: C.border }}>|</span>
             <span style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 12, color: C.dim }}>v0.1.0</span>
           </div>
@@ -355,7 +355,7 @@ export default function Home() {
             <ThemeToggle mode={themeMode} onChange={handleTheme} C={C} />
             <div style={{ display: "flex", gap: 14, fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.12em", marginLeft: 4 }}>
               <span style={{ color: C.dim }}>IBM BOB 2026</span>
-              <a href="https://github.com/jefribulomakassar/conversa-bob-mcp" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
+              <a href="https://github.com/jefribulomakassar/conversa-bob" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
             </div>
           </div>
         </div>
