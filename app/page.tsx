@@ -40,7 +40,7 @@ const TOOLS = [
 const MCP_CONFIG = `{
   "mcpServers": {
     "conversa": {
-      "url": "https://conversa-bob-mcp.vercel.app/api/mcp",
+      "url": "https://conversa-bob.vercel.app/api/mcp",
       "headers": {
         "Authorization": "Bearer <MCP_AUTH_TOKEN>"
       },
@@ -367,7 +367,7 @@ export default function Home() {
              │  JSON-RPC 2.0 / HTTP
              ▼
   ┌─────────────────────┐
-  │  conversa-bob-mcp   │  ← YOU ARE HERE
+  │  conversa-bob       │  ← YOU ARE HERE
   │  (Vercel · Next.js) │
   └──────────┬──────────┘
              │
