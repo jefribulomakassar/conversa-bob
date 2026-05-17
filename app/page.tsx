@@ -248,7 +248,11 @@ export default function Home() {
     setTesting(true); setTestOutput("");
     await new Promise(r => setTimeout(r, 900));
     try {
-      const res = await fetch("/api/mcp");
+      const res = await fetch("/api/mcp", {
+        headers: {
+          "Authorization": "Bearer " + process.env.NEXT_PUBLIC_MCP_AUTH_TOKEN
+        }
+      });
       const data = await res.json();
       setTestOutput(JSON.stringify(data, null, 2));
     } catch {
