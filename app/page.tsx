@@ -306,7 +306,7 @@ export default function Home() {
               <ThemeToggle mode={themeMode} onChange={handleTheme} C={C} />
               <div style={{ display: "flex", gap: 16, fontSize: 13, letterSpacing: "0.15em" }}>
                 <span style={{ color: C.dim }}>IBM BOB 2026</span>
-                <a href="https://github.com" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
+                <a href="https://conversa-bob.vercel.app" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
               </div>
             </div>
           </header>
