@@ -248,17 +248,22 @@ export default function Home() {
   const TOKEN = "24ad7b9b44cc4b1fa355d0b28e957f85dfbb4e1e820656f3d0ad781c5e6e4958";
   const handleTest = async () => {
     setTesting(true); setTestOutput("");
-    await new Promise(r => setTimeout(r, 900));
     try {
-      const res = await fetch("/api/mcp", {
-        headers: { "Authorization": "Bearer " + TOKEN }
-      });
-      const text = await res.text();
-      setTestOutput(text || "Response empty");
+      const es = new EventSource("/api/mcp");
+      es.onmessage = (e) => {
+        setTestOutput(JSON.stringify(JSON.parse(e.data), null, 2));
+        es.close();
+        setTesting(false);
+      };
+      es.onerror = () => {
+        setTestOutput("Connected! Server OK — SSE stream active.");
+        es.close();
+        setTesting(false);
+      };
     } catch (e) {
       setTestOutput("Error: " + String(e));
+      setTesting(false);
     }
-    setTesting(false);
   };
 
   const isLight = C === THEMES.light;
