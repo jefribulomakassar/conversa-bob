@@ -206,12 +206,14 @@ function VisualToggle({ vStyle, onChange, C }: { vStyle: VisualStyle; onChange: 
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <span style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 10, color: C.dim, letterSpacing: "0.15em" }}>STYLE:</span>
       <div style={{ display: "flex", border: `1px solid ${C.border}`, overflow: "hidden", borderRadius: 4 }}>
-        {(["hacker", "nature"] as VisualStyle[]).map(s => (
-          <button key={s} onClick={() => onChange(s)}
-            style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 11, letterSpacing: "0.08em", padding: "6px 12px", background: vStyle === s ? `${C.green}18` : "transparent", border: "none", borderRight: s === "hacker" ? `1px solid ${C.border}` : "none", color: vStyle === s ? C.green : C.dim, cursor: "pointer", transition: "all 0.2s", fontWeight: vStyle === s ? 700 : 400 }}>
-            {s === "hacker" ? "⌨ HACKER" : "🌿 NATURE"}
-          </button>
-        ))}
+        <button onClick={() => onChange("hacker")}
+          style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 11, letterSpacing: "0.08em", padding: "6px 12px", background: `${C.green}18`, border: "none", borderRight: `1px solid ${C.border}`, color: C.green, cursor: "pointer", transition: "all 0.2s", fontWeight: 700 }}>
+          ⌨ HACKER
+        </button>
+        <button disabled title="Coming soon"
+          style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 11, letterSpacing: "0.08em", padding: "6px 12px", background: "transparent", border: "none", color: C.dim, cursor: "not-allowed", opacity: 0.4 }}>
+          🌿 NATURE
+        </button>
       </div>
     </div>
   );
@@ -343,7 +345,7 @@ export default function Home() {
           {/* Brand */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
             <div style={{ width: 8, height: 8, background: C.green, boxShadow: `0 0 10px ${C.green}`, animation: "blink 2s step-end infinite" }} />
-            <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_BOB</span>
+            <span style={{ fontFamily: "'Orbitron',monospace", fontSize: 13, letterSpacing: "0.35em", color: C.muted }}>CONVERSA_MCP</span>
             <span style={{ color: C.border }}>|</span>
             <span style={{ fontFamily: "'Share Tech Mono',monospace", fontSize: 12, color: C.dim }}>v0.1.0</span>
           </div>
@@ -355,7 +357,7 @@ export default function Home() {
             <ThemeToggle mode={themeMode} onChange={handleTheme} C={C} />
             <div style={{ display: "flex", gap: 14, fontFamily: "'Share Tech Mono',monospace", fontSize: 12, letterSpacing: "0.12em", marginLeft: 4 }}>
               <span style={{ color: C.dim }}>IBM BOB 2026</span>
-              <a href="https://github.com/jefribulomakassar/conversa-bob" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
+              <a href="https://github.com/jefribulomakassar/conversa-bob-mcp" target="_blank" rel="noreferrer" style={{ color: C.muted, textDecoration: "none" }}>[GITHUB]</a>
             </div>
           </div>
         </div>
