@@ -253,10 +253,10 @@ export default function Home() {
           "Authorization": "Bearer " + process.env.NEXT_PUBLIC_MCP_AUTH_TOKEN
         }
       });
-      const data = await res.json();
-      setTestOutput(JSON.stringify(data, null, 2));
-    } catch {
-      setTestOutput(`{\n  "status": "ok",\n  "name": "conversa-mcp",\n  "version": "0.1.0",\n  "tools": 5\n}`);
+      const text = await res.text();
+      setTestOutput(text || "Response empty");
+    } catch (e) {
+      setTestOutput("Error: " + String(e));
     }
     setTesting(false);
   };
