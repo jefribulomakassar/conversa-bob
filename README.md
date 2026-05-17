@@ -263,8 +263,8 @@ Deployment in progress. Ready in 1-2 minutes.
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/yourusername/conversa-bob-mcp
-cd conversa-bob-mcp
+git clone https://github.com/jefribulomakassar/conversa-bob
+cd conversa-bob
 npm install
 
 # 2. Configure environment variables
