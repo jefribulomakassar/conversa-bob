@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleMCPRequest } from "../../../lib/mcp/server";
 
-const MCP_AUTH_TOKEN = process.env.MCP_AUTH_TOKEN ?? "";
+const MCP_AUTH_TOKEN = "";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
